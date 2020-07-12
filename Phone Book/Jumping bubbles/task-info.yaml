@@ -1,0 +1,83 @@
+type: edu
+custom_name: stage2
+files:
+- name: test/PhoneBookTest.java
+  visible: false
+  text: |
+    import org.hyperskill.hstest.stage.StageTest;
+    import org.hyperskill.hstest.testcase.CheckResult;
+    import org.hyperskill.hstest.testcase.TestCase;
+    import phonebook.MainKt;
+
+    import java.util.Arrays;
+    import java.util.List;
+
+    public class PhoneBookTest extends StageTest {
+        public PhoneBookTest() {
+            super(MainKt.class);
+        }
+
+        @Override
+        public List<TestCase> generate() {
+            return Arrays.asList(
+                new TestCase().setTimeLimit(30 * 60 * 1000)
+            );
+        }
+
+        @Override
+        public CheckResult check(String reply, Object clue) {
+            reply = reply.toLowerCase();
+            return new CheckResult(
+                reply.contains("start searching")
+                    && reply.contains("found")
+                    && reply.contains("min.")
+                    && reply.contains("sec.")
+                    && reply.contains("ms.")
+                    && reply.contains("sorting time")
+                    && reply.contains("searching time")
+                    && reply.contains("linear search")
+                    && reply.contains("bubble sort")
+                    && reply.contains("jump search"));
+        }
+    }
+  learner_created: false
+- name: src/phonebook/Main.kt
+  visible: true
+  text: |
+    package phonebook
+
+    import java.io.File
+
+    fun main() {
+        val phones = File("/Users/dariayerofieieva/Downloads/directory.txt")
+                .useLines { it.toList() }
+    //            .map { it.substringAfter(' ') to it.substringBefore(' ') }
+    //            .toMap()
+        val search = File("/Users/dariayerofieieva/Downloads/find.txt").useLines { it.toList() }
+
+        val startTime = System.currentTimeMillis()
+        println("Start searching...")
+        var found = 0
+
+        for (s in search) {
+    //        if (phones[s] != null) {
+    //            found++
+    //        }
+            for (p in phones) {
+                if (s == p.substringAfter(' ')) {
+                    found++
+                }
+            }
+        }
+
+        val timeTaken = System.currentTimeMillis() - startTime
+        val min = timeTaken / 1000 / 60
+        val sec = timeTaken / 1000 % 60
+        val ms = timeTaken % 1000
+
+        println("Found $found / ${search.count()} entries. Time taken: $min min. $sec sec. $ms ms.")
+    }
+  learner_created: true
+feedback_link: https://hyperskill.org/projects/86/stages/477/implement
+status: Solved
+record: 2
